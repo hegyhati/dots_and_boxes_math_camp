@@ -3,17 +3,17 @@ from game import Game
 DISP = {
     "horizontal" : {
         True: "━━",
-        False: "┄┄"
+        False: "┈┈"
     },
     "vertical" : {
         True: "┃",
-        False: "┆"
+        False: "┊"
     },
-    "grid" : "┼",
+    "grid" : "╋",
     "box" : {
         None: "  ",
         0 : "██",
-        1 : "▒▒"
+        1 : "░░"
     }
 }
 
