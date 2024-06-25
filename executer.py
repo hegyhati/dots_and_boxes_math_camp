@@ -13,14 +13,14 @@ class Player:
 
 
 class GameExecuter:
-    def __init__(self, player1:player, player2:player, width:int, height:int) -> None:
+    def __init__(self, player1:Player, player2:Player, width:int, height:int) -> None:
         self.game = Game(width, height)
         self.players = [player1, player2]
         
     def execute(self) -> int:
         while not self.game.is_finished():
             player = self.players[self.game.next_player()]
-            for move in player.move(self.game):
+            for move in player.moves(self.game):
                 try:
                     self.game.move(*move)
                     break

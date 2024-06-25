@@ -27,7 +27,7 @@ with open(filename, "w") as f:
     moves += moves[:random.randint(1, len(moves)//2)]
     random.shuffle(moves)
     
-    f.write(f"{args.height}\n{args.width}\n")
+    f.write(f"{args.width}\n{args.height}\n")
     f.write("\n".join(moves))
     f.write("\n")
     

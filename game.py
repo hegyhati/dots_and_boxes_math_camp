@@ -56,11 +56,15 @@ class Game:
     
     def get_score(self) ->tuple[int]:
         return tuple(self._score)
+    
+    def is_valid_move(self, direction:str, row:int, column:int) -> bool:
+        return direction == self.HORIZONTAL and 0 <= row < self._rows+1 and 0 <= column < self._columns or direction == self.VERTICAL and 0 <= row < self._rows and 0 <= column < self._columns+1
 
     def move(self, direction:str, row:int, column:int) -> int:
-        where = self._horizontal if direction == self.HORIZONTAL else self._vertical
-        if where[row][column]: raise ValueError("Already done")
-        where[row][column] = True
+        if not self.is_valid_move(direction,row,column): raise ValueError("Invalid move")
+        if self.is_placed(direction,row,column): raise ValueError("Already placed")
+        
+        (self._horizontal if direction == self.HORIZONTAL else self._vertical)[row][column] = True
         self._moves_left -= 1
         new_box = self.__check_new_boxes(direction, row, column)
         if new_box == 0: self._next = 1 - self._next
