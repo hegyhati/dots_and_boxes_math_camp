@@ -5,8 +5,8 @@ class Game:
     VERTICAL = "vertical"
     
     def __init__(self, width = 4, height = 4) -> None:
-        self._columns = self.columns = width
-        self._rows = self.rows = height
+        self._columns = self.width = width
+        self._rows = self.height = height
         self._horizontal = [ [False] * width  for _ in range(height+1) ]
         self._vertical = [ [False] * (width + 1) for _ in range(height) ]
         self._color = [ [None] * width for _ in range(height) ]

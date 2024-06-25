@@ -2,7 +2,7 @@ from game import Game
 from executer import Player, GameExecuter
 from typing import Generator
 
-class HumanTextExecuter(Player):
+class HumanTextPlayer(Player):
     
     DISP = {
         "horizontal" : {
@@ -28,21 +28,21 @@ class HumanTextExecuter(Player):
     @staticmethod
     def board_str(game:Game) -> str:
         s = []
-        for r in range(game.rows):
-            for c in range(game.columns):
-                s.append(HumanTextExecuter.DISP["grid"])
-                s.append(HumanTextExecuter.DISP["horizontal"][game.is_placed(Game.HORIZONTAL,r,c)])
-            s.append(HumanTextExecuter.DISP["grid"])
+        for r in range(game.height):
+            for c in range(game.width):
+                s.append(HumanTextPlayer.DISP["grid"])
+                s.append(HumanTextPlayer.DISP["horizontal"][game.is_placed(Game.HORIZONTAL,r,c)])
+            s.append(HumanTextPlayer.DISP["grid"])
             s.append("\n")
-            for c in range(game.columns):
-                s.append(HumanTextExecuter.DISP["vertical"][game.is_placed(Game.VERTICAL,r,c)])
-                s.append(HumanTextExecuter.DISP["box"][game.get_box_color(r,c)])
-            s.append(HumanTextExecuter.DISP["vertical"][game.is_placed(Game.VERTICAL,r,game.columns)])
+            for c in range(game.width):
+                s.append(HumanTextPlayer.DISP["vertical"][game.is_placed(Game.VERTICAL,r,c)])
+                s.append(HumanTextPlayer.DISP["box"][game.get_box_color(r,c)])
+            s.append(HumanTextPlayer.DISP["vertical"][game.is_placed(Game.VERTICAL,r,game.width)])
             s.append("\n")
-        for c in range(game.columns):
-            s.append(HumanTextExecuter.DISP["grid"])
-            s.append(HumanTextExecuter.DISP["horizontal"][game.is_placed(Game.HORIZONTAL,game.rows,c)])
-        s.append(HumanTextExecuter.DISP["grid"])
+        for c in range(game.width):
+            s.append(HumanTextPlayer.DISP["grid"])
+            s.append(HumanTextPlayer.DISP["horizontal"][game.is_placed(Game.HORIZONTAL,game.height,c)])
+        s.append(HumanTextPlayer.DISP["grid"])
         s.append(f"\n")
         return "".join(s)
     
@@ -62,10 +62,10 @@ class HumanTextExecuter(Player):
         return d,r,c
 
     def moves(self, game:Game) -> Generator[tuple[str,int,int], None, None]:
-        print(HumanTextExecuter.score_str(game,game.next_player()) + HumanTextExecuter.board_str(game))
+        print(HumanTextPlayer.score_str(game,game.next_player()) + HumanTextPlayer.board_str(game))
         while True:   
             try:
-                moves = HumanTextExecuter._textinput_to_move(input(f"Next move (Format: h/v row column): "), game)
+                moves = HumanTextPlayer._textinput_to_move(input(f"Next move (Format: h/v row column): "), game)
                 print() 
             except ValueError as e:
                 print(e, "Try again")
@@ -74,18 +74,18 @@ class HumanTextExecuter(Player):
 
     def on_win(self, game:Game, **kargs) -> None:
         print("You win!")
-        print(HumanTextExecuter.board_str(game))
+        print(HumanTextPlayer.board_str(game))
     
     def on_lose(self, game:Game, **kargs) -> None:
         print("You lose!")
-        print(HumanTextExecuter.board_str(game))
+        print(HumanTextPlayer.board_str(game))
         
 
 def PvP():
     width = int(input("Width of the board: "))
     height = int(input("Height of the board: "))
-    p1 = HumanTextExecuter()
-    p2 = HumanTextExecuter()
+    p1 = HumanTextPlayer()
+    p2 = HumanTextPlayer()
     g = GameExecuter(p1,p2,width,height)
     g.execute()
 
