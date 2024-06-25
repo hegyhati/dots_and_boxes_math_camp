@@ -1,5 +1,6 @@
 from typing import Generator
 from game import Game
+from game_text_ui import GameTextUI
 
 class Player:
     def moves(self, game:Game) -> Generator[tuple[str,int,int], None, None]:
@@ -22,8 +23,8 @@ class GameExecuter:
     def execute(self, verbose=False) -> int:
         while not self.game.is_finished():
             if verbose: 
-                print(HumanTextPlayer.score_str(self.game))
-                print(HumanTextPlayer.board_str(self.game))
+                print(GameTextUI.score_str(self.game))
+                print(GameTextUI.board_str(self.game))
             player = self.players[self.game.next_player()]
             for move in player.moves(self.game):
                 try:
@@ -33,8 +34,8 @@ class GameExecuter:
                 except ValueError:
                     pass
         if verbose: 
-            print(HumanTextPlayer.score_str(self.game))
-            print(HumanTextPlayer.board_str(self.game))
+            print(GameTextUI.score_str(self.game))
+            print(GameTextUI.board_str(self.game))
         p1,p2 = self.game.get_score()
         if p1 > p2:
             if verbose: print(f"Player 1 wins! {p1} - {p2}")
@@ -58,6 +59,7 @@ if __name__ == "__main__":
     import argparse
     from human_text_player import HumanTextPlayer
     from ai_players import NextMovePlayer, NeuralNetworkPlayer
+    
     parser = argparse.ArgumentParser()
     parser.add_argument("player1", type=str, help="Player 1 (Human/NextMove/NeuralNetwork)")
     parser.add_argument("player2", type=str, help="Player 2 (Human/NextMove/NeuralNetwork)")
