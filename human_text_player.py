@@ -80,6 +80,10 @@ class HumanTextPlayer(Player):
         print("You lose!")
         print(HumanTextPlayer.board_str(game))
         
+    def on_draw(self, game: Game, **kargs) -> None:
+        print("It's a draw!")
+        print(HumanTextPlayer.board_str(game))
+        
 
 def PvP():
     width = int(input("Width of the board: "))

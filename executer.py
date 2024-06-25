@@ -11,6 +11,8 @@ class Player:
     def on_lose(self, game:Game, **kargs) -> None:
         pass
 
+    def on_draw(self, game:Game, **kargs) -> None:
+        pass
 
 class GameExecuter:
     def __init__(self, player1:Player, player2:Player, width:int, height:int) -> None:
@@ -42,6 +44,11 @@ class GameExecuter:
             if verbose: print(f"Player 2 wins! {p1} - {p2}")
             self.players[1].on_win(self.game)
             self.players[0].on_lose(self.game)
+        else:
+            if verbose: print(f"It's a draw! {p1} - {p2}")
+            self.players[0].on_draw(self.game)
+            self.players[1].on_draw(self.game)
+                        
         return p1-p2
     
     
