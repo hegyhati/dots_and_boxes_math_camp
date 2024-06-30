@@ -1,3 +1,4 @@
+import random
 from typing import Generator
 import torch
 import torch.nn as nn
@@ -11,6 +12,21 @@ class NextMovePlayer(Player):
         for d in [Game.HORIZONTAL, Game.VERTICAL]:
             for r in range(game.height+1 if d == Game.HORIZONTAL else game.height):
                 for c in range(game.width if d == Game.HORIZONTAL else game.width+1):
+                    if not game.is_placed(d,r,c):
+                        yield d,r,c
+
+class RandomPlayer(Player):
+    
+   def moves(self, game: Game) -> Generator[tuple[str, int, int], None, None]:
+        directions = [Game.HORIZONTAL, Game.VERTICAL]
+        random.shuffle(directions)
+        for d in directions:
+            rows = list(range(game.height+1 if d == Game.HORIZONTAL else game.height))
+            random.shuffle(rows)
+            columns = list(range(game.width if d == Game.HORIZONTAL else game.width+1))
+            random.shuffle(columns)
+            for r in rows:
+                for c in columns:
                     if not game.is_placed(d,r,c):
                         yield d,r,c
     
@@ -50,7 +66,7 @@ class NeuralNetworkPlayer(Player):
         for idx in sorted_indices:
             move = self.__idx_to_move(idx)
             yield move
-            self._score -= 2
+            self._score -= 1
     
     def mutate(self):
         for layer in self.model:
@@ -61,6 +77,21 @@ class NeuralNetworkPlayer(Player):
     def get_child(self) -> 'NeuralNetworkPlayer':
         child = deepcopy(self)
         child.mutate()
+        return child
+
+    @staticmethod
+    def get_crossover_child(parent1:'NeuralNetworkPlayer', parent2:'NeuralNetworkPlayer') -> 'NeuralNetworkPlayer':
+        child = deepcopy(parent1)
+        for layer1,layer2 in zip(parent1.model, parent2.model):
+            if isinstance(layer1, nn.Linear):
+                for param1,param2 in zip(layer1.parameters(), layer2.parameters()):
+                    match random.choice([1,2,3]):
+                        case 1:
+                            param1.data = param1.data
+                        case 2:
+                            param1.data = param2.data
+                        case 3:
+                            param1.data = (param1.data + param2.data) / 2 
         return child
     
     def on_win(self, game:Game, **kargs) -> None:
@@ -77,8 +108,8 @@ class NeuralNetworkPlayer(Player):
     def get_score(self) -> int:
         return self._score
     
-    def pretrain_with_nextmove(self, max_iteration:int = 100, max_worsen = 10) -> list[int]:
-        nmp = NextMovePlayer()
+    def pretrain_with(self, PlayerClass, max_iteration:int = 100, max_worsen = 10) -> list[int]:
+        nmp = PlayerClass()
         self.reset_score()
         GameExecuter(nmp, self, self.width, self.height).execute()
         lastbest_dict = self.model.state_dict()
